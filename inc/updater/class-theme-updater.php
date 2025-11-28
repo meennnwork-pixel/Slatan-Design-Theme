@@ -38,12 +38,13 @@ if (!class_exists('Slatan_Theme_Updater')) {
             $remote_version = $this->get_remote_version();
 
             if ($remote_version && version_compare($this->get_theme_version(), $remote_version, '<')) {
-                $res = new stdClass();
-                $res->slug = $this->theme_slug;
-                $res->theme = $this->theme_slug;
-                $res->new_version = $remote_version;
-                $res->url = $this->get_repo_url();
-                $res->package = $this->get_download_url();
+                // WordPress expects an array, not an object
+                $res = array(
+                    'theme' => $this->theme_slug,
+                    'new_version' => $remote_version,
+                    'url' => $this->get_repo_url(),
+                    'package' => $this->get_download_url(),
+                );
 
                 $transient->response[$this->theme_slug] = $res;
             }

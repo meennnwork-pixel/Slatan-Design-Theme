@@ -62,6 +62,11 @@ add_action('after_setup_theme', 'slatan_design_add_editor_styles');
  */
 function slatan_design_register_block_styles()
 {
+    // Check if function exists (WordPress 5.3+)
+    if (!function_exists('register_block_style')) {
+        return;
+    }
+
     // Register a custom style for the paragraph block
     register_block_style(
         'core/paragraph',
@@ -106,6 +111,11 @@ add_action('init', 'slatan_design_register_block_styles');
  */
 function slatan_design_register_block_patterns()
 {
+    // Check if functions exist (WordPress 5.5+)
+    if (!function_exists('register_block_pattern_category') || !function_exists('register_block_pattern')) {
+        return;
+    }
+
     // Register a pattern category
     register_block_pattern_category(
         'slatan-design',

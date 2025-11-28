@@ -162,8 +162,8 @@ function slatan_design_updater_init()
 {
 	// EDIT HERE: Replace with your GitHub username and repository name
 	$updater = new Slatan_Theme_Updater(
-		'your-github-username', // GitHub Username
-		'your-repo-name',       // Repository Name
+		'meennnwork-pixel', // GitHub Username
+		'Slatan-Design-Theme',       // Repository Name
 		'slatan-design'         // Theme Slug (must match folder name)
 	);
 }
