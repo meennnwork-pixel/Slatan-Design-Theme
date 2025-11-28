@@ -1,0 +1,127 @@
+/**
+ * Page Builder Styles
+ * 
+ * Styles to ensure page builders work correctly with the theme
+ *
+ * @package Slatan_Design
+ */
+
+/* Full Width Page Template */
+.page-template-fullwidth .site-main,
+.page-template-canvas .site-main {
+    max-width: 100%;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+/* Canvas Template - Hide Header & Footer */
+.page-template-canvas .site-header,
+.page-template-canvas .site-footer {
+    display: none;
+}
+
+/* Elementor Compatibility */
+.elementor-page .site-main {
+    padding: 0;
+}
+
+.elementor-section {
+    width: 100%;
+}
+
+.elementor-section.elementor-section-boxed>.elementor-container {
+    max-width: 1200px;
+}
+
+/* Beaver Builder Compatibility */
+.fl-builder-page .site-main {
+    padding: 0;
+}
+
+.fl-builder-content {
+    width: 100%;
+}
+
+/* Gutenberg Wide & Full Alignments */
+.alignwide {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.alignfull {
+    max-width: 100%;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+}
+
+/* Ensure images in full-width don't overflow */
+.alignfull img {
+    width: 100%;
+    height: auto;
+}
+
+/* Remove default theme spacing for page builders */
+.elementor-page .entry-content,
+.fl-builder-page .entry-content {
+    margin: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .alignwide {
+        max-width: 100%;
+        padding: 0 20px;
+    }
+}
+
+/* Color Palette Classes for Gutenberg */
+.has-primary-color {
+    color: #0073aa;
+}
+
+.has-primary-background-color {
+    background-color: #0073aa;
+}
+
+.has-secondary-color {
+    color: #005177;
+}
+
+.has-secondary-background-color {
+    background-color: #005177;
+}
+
+.has-accent-color {
+    color: #ffc107;
+}
+
+.has-accent-background-color {
+    background-color: #ffc107;
+}
+
+.has-dark-color {
+    color: #333333;
+}
+
+.has-dark-background-color {
+    background-color: #333333;
+}
+
+.has-light-color {
+    color: #f8f9fa;
+}
+
+.has-light-background-color {
+    background-color: #f8f9fa;
+}
+
+.has-white-color {
+    color: #ffffff;
+}
+
+.has-white-background-color {
+    background-color: #ffffff;
+}

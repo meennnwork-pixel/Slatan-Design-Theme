@@ -1,0 +1,222 @@
+/* Cookie Consent Banner Styles */
+:root {
+    --slatan-cookie-bg: #222222;
+    --slatan-cookie-text: #ffffff;
+    --slatan-cookie-accept-bg: #0073aa;
+    --slatan-cookie-accept-text: #ffffff;
+    --slatan-cookie-accept-bg-hover: #005a87;
+    --slatan-cookie-accept-text-hover: #ffffff;
+    --slatan-cookie-decline-bg: transparent;
+    --slatan-cookie-decline-text: #ffffff;
+    --slatan-cookie-decline-bg-hover: #ffffff;
+    --slatan-cookie-decline-text-hover: #222222;
+    
+    --slatan-cookie-padding-top: 20px;
+    --slatan-cookie-padding-right: 20px;
+    --slatan-cookie-padding-bottom: 20px;
+    --slatan-cookie-padding-left: 20px;
+    
+    --slatan-cookie-btn-padding-y: 8px;
+    --slatan-cookie-btn-padding-x: 18px;
+    
+    --slatan-cookie-banner-radius: 5px;
+    --slatan-cookie-btn-radius: 5px;
+    
+    --slatan-revoke-bg: #ffffff;
+    --slatan-revoke-icon: #222222;
+    --slatan-revoke-bottom: 20px;
+    --slatan-revoke-side: 20px;
+}
+
+.cookie-consent-banner {
+    display: flex;
+    position: fixed;
+    z-index: 1000;
+    box-shadow: 0 0 15px rgba(0,0,0,0.15);
+    transform: translateY(120%);
+    transition: transform 0.5s ease-in-out, background-color 0.3s, color 0.3s;
+    
+    background-color: var(--slatan-cookie-bg);
+    color: var(--slatan-cookie-text);
+    padding: var(--slatan-cookie-padding-top) var(--slatan-cookie-padding-right) var(--slatan-cookie-padding-bottom) var(--slatan-cookie-padding-left);
+    border-radius: var(--slatan-cookie-banner-radius);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.cookie-consent-banner.is-visible {
+    transform: translateY(0);
+}
+
+/* --- Position Classes --- */
+.cookie-consent-banner.position-full-width-bottom {
+    bottom: 0; left: 0; width: 100%;
+    border-radius: 0; /* Override radius for full width */
+}
+.cookie-consent-banner.position-floating-left {
+    bottom: 20px; left: 20px; max-width: 420px; width: 90%;
+}
+.cookie-consent-banner.position-floating-right {
+    bottom: 20px; right: 20px; max-width: 420px; width: 90%;
+}
+
+/* --- Layout Classes --- */
+.cookie-consent-banner.layout-side-text-left {
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+}
+
+.cookie-consent-banner.layout-side-buttons-left {
+    flex-direction: row-reverse;
+    align-items: center;
+    gap: 20px;
+}
+.cookie-consent-banner.layout-stacked {
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* --- Content & Button Containers --- */
+.cookie-consent-content {
+    flex-grow: 1;
+}
+.cookie-consent-buttons {
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+/* --- Text Alignment Classes --- */
+.cookie-consent-content.text-align-left   { text-align: left; }
+.cookie-consent-content.text-align-center { text-align: center; }
+.cookie-consent-content.text-align-right  { text-align: right; }
+
+.layout-stacked .cookie-consent-buttons {
+    width: 100%;
+}
+
+/* --- Elements Styling --- */
+.cookie-consent-content h4 {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--slatan-cookie-text);
+}
+
+.cookie-consent-content p {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+/* Policy Link */
+.cookie-consent-content p a.cookie-consent-policy-link {
+    color: var(--slatan-cookie-text);
+    text-decoration: underline;
+    display: inline-block;
+    margin-left: 8px;
+    transition: text-decoration 0.3s;
+}
+.cookie-consent-content p a.cookie-consent-policy-link:hover {
+    text-decoration: none;
+}
+
+/* Buttons */
+.cookie-consent-banner button {
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    padding: var(--slatan-cookie-btn-padding-y) var(--slatan-cookie-btn-padding-x);
+    border-radius: var(--slatan-cookie-btn-radius);
+}
+
+.cookie-consent-banner button#cookie-consent-accept {
+    background-color: var(--slatan-cookie-accept-bg);
+    color: var(--slatan-cookie-accept-text);
+    border-color: var(--slatan-cookie-accept-bg);
+}
+.cookie-consent-banner button#cookie-consent-accept:hover {
+    background-color: var(--slatan-cookie-accept-bg-hover);
+    color: var(--slatan-cookie-accept-text-hover);
+    border-color: var(--slatan-cookie-accept-bg-hover);
+}
+
+.cookie-consent-banner button.cookie-consent-decline {
+    background-color: var(--slatan-cookie-decline-bg);
+    color: var(--slatan-cookie-decline-text);
+    border-color: var(--slatan-cookie-decline-text);
+}
+.cookie-consent-banner button.cookie-consent-decline:hover {
+    background-color: var(--slatan-cookie-decline-bg-hover);
+    color: var(--slatan-cookie-decline-text-hover);
+    border-color: var(--slatan-cookie-decline-bg-hover);
+}
+
+/* Revoke Button */
+.slatan-revoke-consent {
+    position: fixed;
+    bottom: var(--slatan-revoke-bottom);
+    /* left/right handled by inline style or specific class if needed, but dynamic CSS handles it better for now or we use vars */
+    z-index: 9999;
+    background: var(--slatan-revoke-bg);
+    color: var(--slatan-revoke-icon);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+    pointer-events: none;
+}
+.slatan-revoke-consent.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+.slatan-revoke-consent:hover {
+    transform: scale(1.1);
+}
+.slatan-revoke-consent img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+/* Reset Button (Admin Preview) */
+#slatan-reset-cookie {
+    position: fixed; bottom: 15px; left: 15px;
+    background-color: #d63638; color: white;
+    padding: 8px 12px; border-radius: 4px; z-index: 99998;
+    font-size: 13px; text-decoration: none; font-weight: 600;
+    line-height: 1; opacity: 0.8;
+    transition: opacity 0.3s, transform 0.3s;
+    display: none;
+    transform: translateY(10px);
+}
+#slatan-reset-cookie.is-visible {
+    display: block;
+    transform: translateY(0);
+}
+#slatan-reset-cookie:hover { opacity: 1; color: white; }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .cookie-consent-banner.layout-side-text-left, .cookie-consent-banner.layout-side-buttons-left {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .cookie-consent-buttons {
+        width: 100%;
+        justify-content: center;
+    }
+    .cookie-consent-content.text-align-left, .cookie-consent-content.text-align-right {
+        text-align: center;
+    }
+}

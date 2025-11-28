@@ -1,0 +1,42 @@
+<?php
+/**
+ * The main template file
+ *
+ * @package Slatan_Design
+ */
+
+if (!defined('ABSPATH')) {
+	exit;
+} // Exit if accessed directly.
+
+get_header();
+?>
+
+<?php
+if (have_posts()):
+
+	/* Start the Loop */
+	while (have_posts()):
+		the_post();
+
+		if (has_post_thumbnail()) {
+			the_post_thumbnail('large');
+		}
+
+		the_content();
+
+	endwhile;
+
+	the_posts_navigation();
+
+else:
+
+	// If you want to show something when no content is found, you can add it here.
+	// For an Elementor-first theme, it's often better to handle this with Elementor's theme builder.
+
+endif;
+?>
+
+<?php
+get_sidebar();
+get_footer();

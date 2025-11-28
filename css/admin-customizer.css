@@ -1,0 +1,31 @@
+/* Custom Styles for our Theme Customizer */
+
+/* === Floating Contact Styles === */
+
+/* Create a visual separator for our Floating Contact channel slots */
+.customize-control-checkbox.slatan-fc-channel-start {
+    margin-top: 25px !important;
+    padding-top: 20px !important;
+    border-top: 1px solid #ddd;
+}
+
+/* Style the very first one (Slot 1) to have no top border */
+li[id*="slatan_fc_channel_1_enable_control"] {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    border-top: none !important;
+}
+
+/* Make the label for each slot look like a heading */
+.customize-control-checkbox.slatan-fc-channel-start .customize-control-title {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: #2271b1;
+}
+
+/* === Custom Code Editor Styles === */
+
+/* Enlarge the height of the WP Code Editor */
+.customize-control-code_editor .CodeMirror {
+    height: 90vh !important;
+}
