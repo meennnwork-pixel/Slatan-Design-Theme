@@ -30,41 +30,51 @@ if (!defined('ABSPATH')) {
 			href="#primary"><?php esc_html_e('Skip to content', 'slatan-design'); ?></a>
 
 		<header id="masthead" class="site-header">
-			<div class="site-branding">
-				<?php
-				the_custom_logo();
-				if (is_front_page() && is_home()):
-					?>
-					<h1 class="site-title"><a href="<?php echo esc_url(home_url('/')); ?>"
-							rel="home"><?php echo esc_html(get_bloginfo('name')); ?></a></h1>
+			<?php if (get_theme_mod('slatan_show_site_title', true) || get_theme_mod('slatan_show_site_description', true)): ?>
+				<div class="site-branding">
 					<?php
-				else:
-					?>
-					<p class="site-title"><a href="<?php echo esc_url(home_url('/')); ?>"
-							rel="home"><?php echo esc_html(get_bloginfo('name')); ?></a></p>
-					<?php
-				endif;
-				$slatan_description = get_bloginfo('description', 'display');
-				if ($slatan_description || is_customize_preview()):
-					?>
-					<p class="site-description">
-						<?php echo esc_html($slatan_description); ?>
-					</p>
-				<?php endif; ?>
-			</div><!-- .site-branding -->
+					the_custom_logo();
+					if (get_theme_mod('slatan_show_site_title', true)):
+						if (is_front_page() && is_home()):
+							?>
+							<h1 class="site-title"><a href="<?php echo esc_url(home_url('/')); ?>"
+									rel="home"><?php echo esc_html(get_bloginfo('name')); ?></a></h1>
+							<?php
+						else:
+							?>
+							<p class="site-title"><a href="<?php echo esc_url(home_url('/')); ?>"
+									rel="home"><?php echo esc_html(get_bloginfo('name')); ?></a></p>
+							<?php
+						endif;
+					endif;
 
-			<nav id="site-navigation" class="main-navigation">
-				<button class="menu-toggle" aria-controls="primary-menu"
-					aria-expanded="false"><?php esc_html_e('Primary Menu', 'slatan-design'); ?></button>
-				<?php
-				wp_nav_menu(
-					array(
-						'theme_location' => 'menu-1',
-						'menu_id' => 'primary-menu',
-					)
-				);
-				?>
-			</nav><!-- #site-navigation -->
+					if (get_theme_mod('slatan_show_site_description', true)):
+						$slatan_description = get_bloginfo('description', 'display');
+						if ($slatan_description || is_customize_preview()):
+							?>
+							<p class="site-description">
+								<?php echo esc_html($slatan_description); ?>
+							</p>
+						<?php endif;
+					endif;
+					?>
+				</div><!-- .site-branding -->
+			<?php endif; ?>
+
+			<?php if (get_theme_mod('slatan_show_navigation', true)): ?>
+				<nav id="site-navigation" class="main-navigation">
+					<button class="menu-toggle" aria-controls="primary-menu"
+						aria-expanded="false"><?php esc_html_e('Primary Menu', 'slatan-design'); ?></button>
+					<?php
+					wp_nav_menu(
+						array(
+							'theme_location' => 'menu-1',
+							'menu_id' => 'primary-menu',
+						)
+					);
+					?>
+				</nav><!-- #site-navigation -->
+			<?php endif; ?>
 		</header><!-- #masthead -->
 
 		<main id="primary" class="site-main">

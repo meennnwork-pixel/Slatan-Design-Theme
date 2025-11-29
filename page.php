@@ -19,6 +19,18 @@ if (have_posts()):
 	while (have_posts()):
 		the_post();
 
+		// Check if page title should be shown
+		$show_title = get_post_meta(get_the_ID(), '_slatan_show_page_title', true);
+		if ($show_title === '') {
+			// If not set, use Customizer default
+			$show_title = get_theme_mod('slatan_show_page_title_default', true);
+		}
+
+		// Display title if enabled
+		if ($show_title) {
+			the_title('<h1 class="entry-title">', '</h1>');
+		}
+
 		the_content();
 
 	endwhile;

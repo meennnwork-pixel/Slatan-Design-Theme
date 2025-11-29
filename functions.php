@@ -50,24 +50,7 @@ function slatan_design_setup()
 }
 add_action('after_setup_theme', 'slatan_design_setup');
 
-/**
- * Register widget area.
- */
-function slatan_design_widgets_init()
-{
-	register_sidebar(
-		array(
-			'name' => esc_html__('Sidebar', 'slatan-design'),
-			'id' => 'sidebar-1',
-			'description' => esc_html__('Add widgets here.', 'slatan-design'),
-			'before_widget' => '<section id="%1$s" class="widget %2$s">',
-			'after_widget' => '</section>',
-			'before_title' => '<h2 class="widget-title">',
-			'after_title' => '</h2>',
-		)
-	);
-}
-add_action('widgets_init', 'slatan_design_widgets_init');
+
 
 /**
  * Enqueue scripts and styles.
@@ -93,6 +76,7 @@ add_action('wp_enqueue_scripts', 'slatan_design_scripts');
 require get_template_directory() . '/inc/customizer/cookie-consent-options.php';
 require get_template_directory() . '/inc/customizer/floating-contact-options.php';
 require get_template_directory() . '/inc/customizer/custom-code-options.php';
+require get_template_directory() . '/inc/customizer/header-display-options.php';
 
 /**
  * Include Theme Support features.
@@ -152,6 +136,67 @@ function slatan_design_customizer_scripts()
 	);
 }
 add_action('customize_controls_enqueue_scripts', 'slatan_design_customizer_scripts');
+
+/**
+ * Add meta box for page title visibility
+ */
+function slatan_design_add_page_title_meta_box()
+{
+	add_meta_box(
+		'slatan_page_title_visibility',
+		__('Page Title Display', 'slatan-design'),
+		'slatan_design_page_title_meta_box_callback',
+		'page',
+		'side',
+		'default'
+	);
+}
+add_action('add_meta_boxes', 'slatan_design_add_page_title_meta_box');
+
+/**
+ * Meta box callback
+ */
+function slatan_design_page_title_meta_box_callback($post)
+{
+	wp_nonce_field('slatan_page_title_meta_box', 'slatan_page_title_meta_box_nonce');
+	$value = get_post_meta($post->ID, '_slatan_show_page_title', true);
+	$default = get_theme_mod('slatan_show_page_title_default', true);
+
+	// If value is empty string, it means not set yet, use default
+	$checked = ($value === '') ? $default : $value;
+	?>
+	<label>
+		<input type="checkbox" name="slatan_show_page_title" value="1" <?php checked($checked, 1); ?>>
+		<?php _e('Show page title', 'slatan-design'); ?>
+	</label>
+	<p class="description">
+		<?php _e('Uncheck to hide the page title. Useful for page builder pages.', 'slatan-design'); ?>
+	</p>
+	<?php
+}
+
+/**
+ * Save meta box data
+ */
+function slatan_design_save_page_title_meta_box($post_id)
+{
+	if (!isset($_POST['slatan_page_title_meta_box_nonce'])) {
+		return;
+	}
+	if (!wp_verify_nonce($_POST['slatan_page_title_meta_box_nonce'], 'slatan_page_title_meta_box')) {
+		return;
+	}
+	if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+		return;
+	}
+	if (!current_user_can('edit_post', $post_id)) {
+		return;
+	}
+
+	$value = isset($_POST['slatan_show_page_title']) ? 1 : 0;
+	update_post_meta($post_id, '_slatan_show_page_title', $value);
+}
+add_action('save_post', 'slatan_design_save_page_title_meta_box');
 
 /**
  * GitHub Theme Updater

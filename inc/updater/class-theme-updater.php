@@ -26,6 +26,50 @@ if (!class_exists('Slatan_Theme_Updater')) {
             $this->github_auth = $github_auth;
 
             add_filter('pre_set_site_transient_update_themes', array($this, 'check_update'));
+            add_filter('upgrader_post_install', array($this, 'upgrader_post_install'), 10, 3);
+        }
+
+        /**
+         * Rename the theme folder after installation
+         * GitHub downloads create folders like "username-repo-commithash"
+         * We need to rename it to match the theme slug
+         */
+        public function upgrader_post_install($response, $hook_extra, $result)
+        {
+            global $wp_filesystem;
+
+            // Only process theme updates
+            if (!isset($hook_extra['theme'])) {
+                return $response;
+            }
+
+            // Only process our theme
+            if ($hook_extra['theme'] !== $this->theme_slug) {
+                return $response;
+            }
+
+            // Get the destination folder
+            $theme_dir = trailingslashit(get_theme_root());
+            $proper_destination = $theme_dir . $this->theme_slug;
+
+            // If the folder is already correct, do nothing
+            if ($result['destination'] === $proper_destination) {
+                return $response;
+            }
+
+            // Remove old theme folder if it exists
+            if ($wp_filesystem->exists($proper_destination)) {
+                $wp_filesystem->delete($proper_destination, true);
+            }
+
+            // Rename the downloaded folder to the correct slug
+            $wp_filesystem->move($result['destination'], $proper_destination);
+            $result['destination'] = $proper_destination;
+
+            // Update the destination name
+            $result['destination_name'] = $this->theme_slug;
+
+            return $response;
         }
 
         public function check_update($transient)

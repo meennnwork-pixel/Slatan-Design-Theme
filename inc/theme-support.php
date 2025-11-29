@@ -12,39 +12,9 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-/**
- * Add Custom Header support
- */
-function slatan_design_custom_header_setup()
-{
-    add_theme_support('custom-header', array(
-        'default-image' => '',
-        'default-text-color' => '000000',
-        'width' => 1920,
-        'height' => 400,
-        'flex-width' => true,
-        'flex-height' => true,
-        'header-text' => true,
-    ));
-}
-add_action('after_setup_theme', 'slatan_design_custom_header_setup');
 
-/**
- * Add Custom Background support
- */
-function slatan_design_custom_background_setup()
-{
-    add_theme_support('custom-background', array(
-        'default-color' => 'ffffff',
-        'default-image' => '',
-        'default-repeat' => 'no-repeat',
-        'default-position-x' => 'center',
-        'default-position-y' => 'center',
-        'default-size' => 'cover',
-        'default-attachment' => 'fixed',
-    ));
-}
-add_action('after_setup_theme', 'slatan_design_custom_background_setup');
+
+
 
 /**
  * Add Editor Styles
