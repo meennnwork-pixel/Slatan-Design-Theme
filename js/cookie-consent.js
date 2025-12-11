@@ -67,10 +67,60 @@ document.addEventListener('DOMContentLoaded', function () {
             // Hide banner and show revoke button (no reload)
             banner.classList.remove('is-visible');
             showRevokeButton();
+
+            // ========== SCRIPT BLOCKING: Activate blocked scripts ==========
+            activateBlockedScripts();
+
+            // Dispatch custom event for other scripts to listen
+            window.dispatchEvent(new CustomEvent('slatanConsentGranted'));
         } else {
             document.cookie = cookieName + '=declined; path=/; expires=' + date.toUTCString() + '; SameSite=Lax';
             banner.classList.remove('is-visible');
             showRevokeButton();
+
+            // Dispatch custom event for declined
+            window.dispatchEvent(new CustomEvent('slatanConsentDeclined'));
+        }
+    }
+
+    /**
+     * Activates scripts that were blocked waiting for consent.
+     * Scripts with type="text/plain" and data-consent-required will be activated.
+     */
+    function activateBlockedScripts() {
+        // Find all blocked scripts
+        const blockedScripts = document.querySelectorAll('script[type="text/plain"][data-consent-required]');
+
+        blockedScripts.forEach(function (oldScript) {
+            // Create new script element
+            const newScript = document.createElement('script');
+
+            // Copy all attributes except type
+            Array.from(oldScript.attributes).forEach(function (attr) {
+                if (attr.name !== 'type' && attr.name !== 'data-consent-required') {
+                    newScript.setAttribute(attr.name, attr.value);
+                }
+            });
+
+            // Copy inline content
+            if (oldScript.innerHTML) {
+                newScript.innerHTML = oldScript.innerHTML;
+            }
+
+            // Replace old script with new
+            oldScript.parentNode.replaceChild(newScript, oldScript);
+        });
+
+        console.log('[Slatan Consent] Activated ' + blockedScripts.length + ' blocked scripts.');
+    }
+
+    /**
+     * Check if consent was already given on page load.
+     * If so, activate any blocked scripts immediately.
+     */
+    function checkAndActivateOnLoad() {
+        if (hasConsentCookie() && document.cookie.indexOf(cookieName + '=accepted') >= 0) {
+            activateBlockedScripts();
         }
     }
 
@@ -134,6 +184,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // --- 1. Initial Load ---
     showBanner();
+    checkAndActivateOnLoad(); // Activate blocked scripts if consent already given
 
     // --- 2. Event Delegation (Using .closest()) ---
     document.body.addEventListener('click', function (event) {

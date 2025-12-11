@@ -189,31 +189,124 @@ function slatan_design_register_floating_contact_options($wp_customize)
 	$wp_customize->add_setting('slatan_fc_tooltip_border_radius', array('default' => '4', 'sanitize_callback' => 'absint'));
 	$wp_customize->add_control('slatan_fc_tooltip_border_radius_control', array('label' => __('Tooltip Radius', 'slatan-design'), 'section' => 'slatan_fc_style_section', 'settings' => 'slatan_fc_tooltip_border_radius', 'type' => 'number'));
 
-	// Section: Channels
+	// Section: Channels (New Repeater)
 	$wp_customize->add_section('slatan_fc_channels_section', array('title' => __('Contact Channels', 'slatan-design'), 'panel' => 'slatan_floating_contact_panel', 'priority' => 20));
 
-	// 9 Channel Slots
+	// Repeater Control for Channels
+	$wp_customize->add_setting('slatan_fc_channels', array(
+		'default' => '',
+		'sanitize_callback' => 'slatan_sanitize_repeater_channels',
+		'transport' => 'refresh'
+	));
+
+	$wp_customize->add_control(new Slatan_Customizer_Repeater_Control(
+		$wp_customize,
+		'slatan_fc_channels_control',
+		array(
+			'label' => __('Contact Channels', 'slatan-design'),
+			'description' => __('Add unlimited contact channels. Each channel needs a link to be displayed.', 'slatan-design'),
+			'section' => 'slatan_fc_channels_section',
+			'settings' => 'slatan_fc_channels',
+			'max_items' => 20,
+			'button_labels' => array(
+				'add' => __('Add Channel', 'slatan-design'),
+				'remove' => __('Remove', 'slatan-design'),
+				'toggle' => __('Enable/Disable', 'slatan-design'),
+			),
+			'fields' => array(
+				'link' => array(
+					'type' => 'url',
+					'label' => __('Link URL', 'slatan-design'),
+					'description' => __('e.g., https://wa.me/66812345678', 'slatan-design'),
+					'placeholder' => 'https://',
+					'default' => ''
+				),
+				'label' => array(
+					'type' => 'text',
+					'label' => __('Label / Tooltip', 'slatan-design'),
+					'placeholder' => __('WhatsApp', 'slatan-design'),
+					'default' => ''
+				),
+				'fa_class' => array(
+					'type' => 'text',
+					'label' => __('Font Awesome Class', 'slatan-design'),
+					'description' => __('e.g., fab fa-whatsapp', 'slatan-design'),
+					'placeholder' => 'fas fa-link',
+					'default' => 'fas fa-link'
+				),
+				'bg_color' => array(
+					'type' => 'color',
+					'label' => __('Background Color', 'slatan-design'),
+					'default' => '#0073aa'
+				),
+				'icon_color' => array(
+					'type' => 'color',
+					'label' => __('Icon Color', 'slatan-design'),
+					'default' => '#ffffff'
+				),
+			)
+		)
+	));
+
+	// Section: Legacy Channels (Hidden for backward compatibility)
+	$wp_customize->add_section('slatan_fc_legacy_channels_section', array(
+		'title' => __('Legacy Channels (Deprecated)', 'slatan-design'),
+		'description' => __('These settings are kept for backward compatibility. Please use the new "Contact Channels" section above.', 'slatan-design'),
+		'panel' => 'slatan_floating_contact_panel',
+		'priority' => 100
+	));
+
+	// 9 Legacy Channel Slots (kept for backward compatibility)
 	for ($i = 1; $i <= 9; $i++) {
 		$wp_customize->add_setting('slatan_fc_channel_' . $i . '_enable', array('default' => false, 'sanitize_callback' => 'slatan_sanitize_checkbox'));
-		$wp_customize->add_control('slatan_fc_channel_' . $i . '_enable_control', array('label' => sprintf('--- Channel %d ---', $i), 'section' => 'slatan_fc_channels_section', 'settings' => 'slatan_fc_channel_' . $i . '_enable', 'type' => 'checkbox'));
+		$wp_customize->add_control('slatan_fc_channel_' . $i . '_enable_control', array('label' => sprintf('--- Channel %d ---', $i), 'section' => 'slatan_fc_legacy_channels_section', 'settings' => 'slatan_fc_channel_' . $i . '_enable', 'type' => 'checkbox'));
 
 		$wp_customize->add_setting('slatan_fc_channel_' . $i . '_link', array('default' => '', 'sanitize_callback' => 'esc_url_raw'));
-		$wp_customize->add_control('slatan_fc_channel_' . $i . '_link_control', array('label' => sprintf('Ch %d: Link', $i), 'section' => 'slatan_fc_channels_section', 'settings' => 'slatan_fc_channel_' . $i . '_link', 'type' => 'url'));
+		$wp_customize->add_control('slatan_fc_channel_' . $i . '_link_control', array('label' => sprintf('Ch %d: Link', $i), 'section' => 'slatan_fc_legacy_channels_section', 'settings' => 'slatan_fc_channel_' . $i . '_link', 'type' => 'url'));
 
 		$wp_customize->add_setting('slatan_fc_channel_' . $i . '_label', array('default' => '', 'sanitize_callback' => 'sanitize_text_field'));
-		$wp_customize->add_control('slatan_fc_channel_' . $i . '_label_control', array('label' => sprintf('Ch %d: Label', $i), 'section' => 'slatan_fc_channels_section', 'settings' => 'slatan_fc_channel_' . $i . '_label', 'type' => 'text'));
+		$wp_customize->add_control('slatan_fc_channel_' . $i . '_label_control', array('label' => sprintf('Ch %d: Label', $i), 'section' => 'slatan_fc_legacy_channels_section', 'settings' => 'slatan_fc_channel_' . $i . '_label', 'type' => 'text'));
 
 		$wp_customize->add_setting('slatan_fc_channel_' . $i . '_bg_color', array('default' => '#0073aa', 'sanitize_callback' => 'sanitize_hex_color'));
-		$wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'slatan_fc_channel_' . $i . '_bg_color_control', array('label' => sprintf('Ch %d: BG', $i), 'section' => 'slatan_fc_channels_section', 'settings' => 'slatan_fc_channel_' . $i . '_bg_color')));
+		$wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'slatan_fc_channel_' . $i . '_bg_color_control', array('label' => sprintf('Ch %d: BG', $i), 'section' => 'slatan_fc_legacy_channels_section', 'settings' => 'slatan_fc_channel_' . $i . '_bg_color')));
 
 		$wp_customize->add_setting('slatan_fc_channel_' . $i . '_icon_color', array('default' => '#ffffff', 'sanitize_callback' => 'sanitize_hex_color'));
-		$wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'slatan_fc_channel_' . $i . '_icon_color_control', array('label' => sprintf('Ch %d: Icon', $i), 'section' => 'slatan_fc_channels_section', 'settings' => 'slatan_fc_channel_' . $i . '_icon_color')));
+		$wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'slatan_fc_channel_' . $i . '_icon_color_control', array('label' => sprintf('Ch %d: Icon', $i), 'section' => 'slatan_fc_legacy_channels_section', 'settings' => 'slatan_fc_channel_' . $i . '_icon_color')));
 
 		$wp_customize->add_setting('slatan_fc_channel_' . $i . '_fa_class', array('default' => 'fas fa-link', 'sanitize_callback' => 'sanitize_text_field'));
-		$wp_customize->add_control('slatan_fc_channel_' . $i . '_fa_class_control', array('label' => sprintf('Ch %d: FA Class', $i), 'section' => 'slatan_fc_channels_section', 'settings' => 'slatan_fc_channel_' . $i . '_fa_class', 'type' => 'text'));
+		$wp_customize->add_control('slatan_fc_channel_' . $i . '_fa_class_control', array('label' => sprintf('Ch %d: FA Class', $i), 'section' => 'slatan_fc_legacy_channels_section', 'settings' => 'slatan_fc_channel_' . $i . '_fa_class', 'type' => 'text'));
 
 		$wp_customize->add_setting('slatan_fc_channel_' . $i . '_svg_icon', array('default' => '', 'sanitize_callback' => 'absint'));
-		$wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, 'slatan_fc_channel_' . $i . '_svg_icon_control', array('label' => sprintf('Ch %d: SVG', $i), 'section' => 'slatan_fc_channels_section', 'settings' => 'slatan_fc_channel_' . $i . '_svg_icon', 'mime_type' => 'image/svg+xml')));
+		$wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, 'slatan_fc_channel_' . $i . '_svg_icon_control', array('label' => sprintf('Ch %d: SVG', $i), 'section' => 'slatan_fc_legacy_channels_section', 'settings' => 'slatan_fc_channel_' . $i . '_svg_icon', 'mime_type' => 'image/svg+xml')));
 	}
 }
 add_action('customize_register', 'slatan_design_register_floating_contact_options');
+
+/**
+ * Sanitize repeater channels data
+ */
+function slatan_sanitize_repeater_channels($input)
+{
+	if (empty($input)) {
+		return '';
+	}
+
+	$channels = json_decode($input, true);
+	if (!is_array($channels)) {
+		return '';
+	}
+
+	$sanitized = array();
+	foreach ($channels as $channel) {
+		$sanitized[] = array(
+			'enable' => isset($channel['enable']) ? (bool) $channel['enable'] : true,
+			'link' => isset($channel['link']) ? esc_url_raw($channel['link']) : '',
+			'label' => isset($channel['label']) ? sanitize_text_field($channel['label']) : '',
+			'fa_class' => isset($channel['fa_class']) ? sanitize_text_field($channel['fa_class']) : 'fas fa-link',
+			'bg_color' => isset($channel['bg_color']) ? sanitize_hex_color($channel['bg_color']) : '#0073aa',
+			'icon_color' => isset($channel['icon_color']) ? sanitize_hex_color($channel['icon_color']) : '#ffffff',
+		);
+	}
+
+	return wp_json_encode($sanitized);
+}

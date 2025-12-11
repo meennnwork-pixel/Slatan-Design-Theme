@@ -43,18 +43,49 @@ function slatan_display_floating_contact()
     $toggle_tooltip_close = get_theme_mod('slatan_fc_toggle_tooltip_close', 'Close Menu');
     $tooltip_display_mode = get_theme_mod('slatan_fc_toggle_tooltip_display', 'hover');
 
+    // Get channels - try new repeater first, fallback to legacy
     $active_channels = array();
-    for ($i = 1; $i <= 9; $i++) {
-        if (get_theme_mod('slatan_fc_channel_' . $i . '_enable', false)) {
-            $link = get_theme_mod('slatan_fc_channel_' . $i . '_link', '');
-            if (!empty($link)) {
-                $active_channels[] = [
-                    'slot_id' => $i,
-                    'label' => get_theme_mod('slatan_fc_channel_' . $i . '_label', ''),
-                    'link' => $link,
-                    'svg' => get_theme_mod('slatan_fc_channel_' . $i . '_svg_icon') ? wp_get_attachment_image_url(get_theme_mod('slatan_fc_channel_' . $i . '_svg_icon'), 'full') : '',
-                    'fa_class' => get_theme_mod('slatan_fc_channel_' . $i . '_fa_class', 'fas fa-link'),
-                ];
+    $channels_json = get_theme_mod('slatan_fc_channels', '');
+
+    if (!empty($channels_json)) {
+        // New repeater format
+        $channels = json_decode($channels_json, true);
+        if (is_array($channels)) {
+            $index = 1;
+            foreach ($channels as $channel) {
+                // Only add if enabled and has link
+                $is_enabled = isset($channel['enable']) ? $channel['enable'] : true;
+                if ($is_enabled && !empty($channel['link'])) {
+                    $active_channels[] = array(
+                        'slot_id' => 'new-' . $index,
+                        'label' => isset($channel['label']) ? $channel['label'] : '',
+                        'link' => $channel['link'],
+                        'fa_class' => isset($channel['fa_class']) ? $channel['fa_class'] : 'fas fa-link',
+                        'bg_color' => isset($channel['bg_color']) ? $channel['bg_color'] : '#0073aa',
+                        'icon_color' => isset($channel['icon_color']) ? $channel['icon_color'] : '#ffffff',
+                    );
+                    $index++;
+                }
+            }
+        }
+    }
+
+    // Fallback to legacy channels if no repeater data
+    if (empty($active_channels)) {
+        for ($i = 1; $i <= 9; $i++) {
+            if (get_theme_mod('slatan_fc_channel_' . $i . '_enable', false)) {
+                $link = get_theme_mod('slatan_fc_channel_' . $i . '_link', '');
+                if (!empty($link)) {
+                    $active_channels[] = [
+                        'slot_id' => $i,
+                        'label' => get_theme_mod('slatan_fc_channel_' . $i . '_label', ''),
+                        'link' => $link,
+                        'svg' => get_theme_mod('slatan_fc_channel_' . $i . '_svg_icon') ? wp_get_attachment_image_url(get_theme_mod('slatan_fc_channel_' . $i . '_svg_icon'), 'full') : '',
+                        'fa_class' => get_theme_mod('slatan_fc_channel_' . $i . '_fa_class', 'fas fa-link'),
+                        'bg_color' => get_theme_mod('slatan_fc_channel_' . $i . '_bg_color', '#0073aa'),
+                        'icon_color' => get_theme_mod('slatan_fc_channel_' . $i . '_icon_color', '#ffffff'),
+                    ];
+                }
             }
         }
     }
@@ -237,12 +268,32 @@ function slatan_generate_floating_contact_dynamic_css()
         border-color: transparent {$tooltip_bg} transparent transparent;
     }";
 
-    // Channel colors
-    for ($i = 1; $i <= 9; $i++) {
-        if (get_theme_mod('slatan_fc_channel_' . $i . '_enable')) {
-            $bg_color = get_theme_mod('slatan_fc_channel_' . $i . '_bg_color', '#0073aa');
-            $icon_color = get_theme_mod('slatan_fc_channel_' . $i . '_icon_color', '#ffffff');
-            $css .= ".slatan-fc-wrapper .channel-slot-{$i} a { background-color: {$bg_color}; color: {$icon_color}; }";
+    // Channel colors - support both repeater and legacy
+    $channels_json = get_theme_mod('slatan_fc_channels', '');
+
+    if (!empty($channels_json)) {
+        // New repeater format
+        $channels = json_decode($channels_json, true);
+        if (is_array($channels)) {
+            $index = 1;
+            foreach ($channels as $channel) {
+                $is_enabled = isset($channel['enable']) ? $channel['enable'] : true;
+                if ($is_enabled && !empty($channel['link'])) {
+                    $bg_color = isset($channel['bg_color']) ? $channel['bg_color'] : '#0073aa';
+                    $icon_color = isset($channel['icon_color']) ? $channel['icon_color'] : '#ffffff';
+                    $css .= ".slatan-fc-wrapper .channel-slot-new-{$index} a { background-color: {$bg_color}; color: {$icon_color}; }";
+                    $index++;
+                }
+            }
+        }
+    } else {
+        // Legacy channels
+        for ($i = 1; $i <= 9; $i++) {
+            if (get_theme_mod('slatan_fc_channel_' . $i . '_enable')) {
+                $bg_color = get_theme_mod('slatan_fc_channel_' . $i . '_bg_color', '#0073aa');
+                $icon_color = get_theme_mod('slatan_fc_channel_' . $i . '_icon_color', '#ffffff');
+                $css .= ".slatan-fc-wrapper .channel-slot-{$i} a { background-color: {$bg_color}; color: {$icon_color}; }";
+            }
         }
     }
 

@@ -167,5 +167,104 @@ function slatan_design_register_custom_code_options($wp_customize)
         'type' => 'number',
         'priority' => 20,
     ));
+
+    // ===================================================================================
+    // SECTION: Custom CSS (Dedicated)
+    // ===================================================================================
+    $wp_customize->add_section('slatan_custom_css_section', array(
+        'title' => __('Custom CSS', 'slatan-design'),
+        'panel' => 'slatan_custom_code_panel',
+        'priority' => 5, // Show first
+        'description' => __('Add custom CSS styles. This is separate from WordPress Additional CSS.', 'slatan-design'),
+    ));
+    $wp_customize->add_setting('slatan_custom_css', array(
+        'default' => '',
+        'transport' => 'postMessage',
+        'sanitize_callback' => 'wp_strip_all_tags',
+    ));
+    $wp_customize->add_control(new WP_Customize_Code_Editor_Control($wp_customize, 'slatan_custom_css_control', array(
+        'label' => __('Custom CSS', 'slatan-design'),
+        'section' => 'slatan_custom_css_section',
+        'settings' => 'slatan_custom_css',
+        'code_type' => 'text/css',
+        'priority' => 10,
+    )));
+    // Minify CSS option
+    $wp_customize->add_setting('slatan_custom_css_minify', array(
+        'default' => true,
+        'sanitize_callback' => 'slatan_sanitize_checkbox',
+    ));
+    $wp_customize->add_control('slatan_custom_css_minify_control', array(
+        'label' => __('Minify CSS', 'slatan-design'),
+        'description' => __('Remove whitespace and comments for smaller file size.', 'slatan-design'),
+        'section' => 'slatan_custom_css_section',
+        'settings' => 'slatan_custom_css_minify',
+        'type' => 'checkbox',
+        'priority' => 15,
+    ));
+    // ===================================================================================
+    // SECTION: Custom JavaScript
+    // ===================================================================================
+    $wp_customize->add_section('slatan_custom_js_section', array(
+        'title' => __('Custom JavaScript', 'slatan-design'),
+        'panel' => 'slatan_custom_code_panel',
+        'priority' => 6,
+        'description' => __('Add custom JavaScript code. Use with caution!', 'slatan-design'),
+    ));
+    $wp_customize->add_setting('slatan_custom_js', array(
+        'default' => '',
+        'transport' => 'postMessage',
+        'capability' => 'unfiltered_html',
+        'sanitize_callback' => 'slatan_sanitize_raw_html',
+    ));
+    $wp_customize->add_control(new WP_Customize_Code_Editor_Control($wp_customize, 'slatan_custom_js_control', array(
+        'label' => __('Custom JavaScript', 'slatan-design'),
+        'description' => __('Do not include <script> tags. Code will be wrapped automatically.', 'slatan-design'),
+        'section' => 'slatan_custom_js_section',
+        'settings' => 'slatan_custom_js',
+        'code_type' => 'text/javascript',
+        'priority' => 10,
+    )));
+    // JS Location
+    $wp_customize->add_setting('slatan_custom_js_location', array(
+        'default' => 'footer',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('slatan_custom_js_location_control', array(
+        'label' => __('JavaScript Location', 'slatan-design'),
+        'section' => 'slatan_custom_js_section',
+        'settings' => 'slatan_custom_js_location',
+        'type' => 'select',
+        'choices' => array(
+            'header' => __('Header (before </head>)', 'slatan-design'),
+            'footer' => __('Footer (before </body>)', 'slatan-design'),
+        ),
+        'priority' => 15,
+    ));
+    // Require consent for JS
+    $wp_customize->add_setting('slatan_custom_js_require_consent', array(
+        'default' => false,
+        'sanitize_callback' => 'slatan_sanitize_checkbox',
+    ));
+    $wp_customize->add_control('slatan_custom_js_require_consent_control', array(
+        'label' => __('Require Cookie Consent', 'slatan-design'),
+        'section' => 'slatan_custom_js_section',
+        'settings' => 'slatan_custom_js_require_consent',
+        'type' => 'checkbox',
+        'priority' => 20,
+    ));
+    // Defer JS
+    $wp_customize->add_setting('slatan_custom_js_defer', array(
+        'default' => true,
+        'sanitize_callback' => 'slatan_sanitize_checkbox',
+    ));
+    $wp_customize->add_control('slatan_custom_js_defer_control', array(
+        'label' => __('Defer JavaScript', 'slatan-design'),
+        'description' => __('Load JS after page content for better performance.', 'slatan-design'),
+        'section' => 'slatan_custom_js_section',
+        'settings' => 'slatan_custom_js_defer',
+        'type' => 'checkbox',
+        'priority' => 25,
+    ));
 }
 add_action('customize_register', 'slatan_design_register_custom_code_options', 20);

@@ -125,3 +125,92 @@
 .has-white-background-color {
     background-color: #ffffff;
 }
+
+/* ===========================================
+   PERFORMANCE OPTIMIZATIONS
+   =========================================== */
+
+/* CSS Containment for better rendering performance */
+.elementor-section,
+.elementor-column,
+.fl-row,
+.fl-col {
+    contain: layout style;
+}
+
+/* Optimize paint for interactive elements */
+.elementor-button,
+.fl-button,
+.elementor-widget,
+.fl-module {
+    will-change: auto;
+}
+
+/* Reduce layout thrashing during animations */
+.elementor-button:hover,
+.elementor-button:focus,
+.fl-button:hover,
+.fl-button:focus {
+    will-change: transform, background-color;
+}
+
+/* Optimize image containers */
+.elementor-image,
+.fl-photo {
+    contain: layout;
+}
+
+/* ===========================================
+   ADDITIONAL PAGE BUILDER SUPPORT
+   =========================================== */
+
+/* Brizy Builder Support */
+.brz-root__container .site-main {
+    padding: 0;
+}
+
+.brz-root__container {
+    width: 100%;
+}
+
+/* Divi Builder Support */
+.et-db #et-main-area .site-main,
+.et_pb_pagebuilder_layout .site-main {
+    padding: 0;
+}
+
+/* Oxygen Builder Support */
+.ct-inner-content .site-main {
+    padding: 0;
+}
+
+/* WPBakery (Visual Composer) Support */
+.wpb-js-composer .site-main {
+    padding: 0;
+}
+
+/* ===========================================
+   MOBILE PERFORMANCE OPTIMIZATIONS
+   =========================================== */
+
+@media (max-width: 1024px) {
+    /* Disable contain on small screens for better flexibility */
+    .elementor-section,
+    .elementor-column {
+        contain: none;
+    }
+    
+    /* Reduce transform animations on mobile for better performance */
+    .elementor-button:hover,
+    .fl-button:hover {
+        will-change: auto;
+    }
+}
+
+/* Print styles for page builders */
+@media print {
+    .elementor-section,
+    .fl-row {
+        page-break-inside: avoid;
+    }
+}

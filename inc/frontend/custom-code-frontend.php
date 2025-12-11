@@ -170,3 +170,120 @@ function slatan_design_output_custom_code_body_end()
         }
     }
 }
+
+/**
+ * Output Custom CSS
+ */
+function slatan_design_output_custom_css()
+{
+    $custom_css = get_theme_mod('slatan_custom_css', '');
+
+    if (empty($custom_css)) {
+        return;
+    }
+
+    // Minify if enabled
+    if (get_theme_mod('slatan_custom_css_minify', true)) {
+        $custom_css = slatan_minify_css($custom_css);
+    }
+
+    // Security: Escape closing style tags to prevent injection
+    $safe_css = str_replace('</style', '<\/style', $custom_css);
+    echo '<style id="slatan-custom-css">' . $safe_css . '</style>' . "\n";
+}
+add_action('wp_head', 'slatan_design_output_custom_css', 100);
+/**
+ * Simple CSS Minifier
+ */
+function slatan_minify_css($css)
+{
+    // Remove comments
+    $css = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $css);
+
+    // Remove whitespace
+    $css = preg_replace('/\s+/', ' ', $css);
+
+    // Remove spaces around selectors and properties
+    $css = preg_replace('/\s*([{}:;,>+~])\s*/', '$1', $css);
+
+    // Remove trailing semicolon before closing brace
+    $css = str_replace(';}', '}', $css);
+
+    return trim($css);
+}
+/**
+ * Output Custom JavaScript
+ */
+function slatan_design_output_custom_js()
+{
+    // Check consent if required
+    if (get_theme_mod('slatan_custom_js_require_consent', false)) {
+        // Check if cookie consent is required and if user has consented
+        $consent_enabled = get_theme_mod('slatan_cookie_consent_enable', false);
+        if ($consent_enabled) {
+            // If consent is required but not given, skip
+            if (!isset($_COOKIE['slatan_cookie_consent']) || $_COOKIE['slatan_cookie_consent'] !== 'accepted') {
+                return;
+            }
+        }
+    }
+
+    $custom_js = get_theme_mod('slatan_custom_js', '');
+
+    if (empty($custom_js)) {
+        return;
+    }
+
+    $defer = get_theme_mod('slatan_custom_js_defer', true);
+
+    // Security: Escape closing script tags to prevent injection
+    $safe_js = str_replace('</script', '<\/script', $custom_js);
+
+    // Output inline script - use DOMContentLoaded for defer (defer doesn't work on inline scripts)
+    echo '<script id="slatan-custom-js">' . "\n";
+    if ($defer) {
+        echo 'document.addEventListener("DOMContentLoaded", function() {' . "\n";
+    }
+    echo $safe_js;
+    if ($defer) {
+        echo "\n});";
+    }
+    echo "\n</script>\n";
+}
+// Hook based on location setting
+function slatan_design_hook_custom_js()
+{
+    $location = get_theme_mod('slatan_custom_js_location', 'footer');
+
+    if ($location === 'header') {
+        add_action('wp_head', 'slatan_design_output_custom_js', 999);
+    } else {
+        add_action('wp_footer', 'slatan_design_output_custom_js', 999);
+    }
+}
+add_action('init', 'slatan_design_hook_custom_js');
+/**
+ * Live preview for Custom CSS in Customizer
+ */
+function slatan_customizer_custom_css_preview()
+{
+    ?>
+    <script>
+        (function ($) {
+            wp.customize('slatan_custom_css', function (value) {
+                value.bind(function (newval) {
+                    var $style = $('#slatan-custom-css');
+                    if ($style.length === 0) {
+                        $('head').append('<style id="slatan-custom-css"></style>');
+                        $style = $('#slatan-custom-css');
+                    }
+                    $style.html(newval);
+                });
+            });
+        })(jQuery);
+    </script>
+    <?php
+}
+add_action('customize_preview_init', function () {
+    add_action('wp_footer', 'slatan_customizer_custom_css_preview', 999);
+});

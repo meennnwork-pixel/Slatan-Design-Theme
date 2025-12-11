@@ -180,3 +180,152 @@ function slatan_design_gutenberg_support()
     ));
 }
 add_action('after_setup_theme', 'slatan_design_gutenberg_support');
+
+/**
+ * ===========================================
+ * ELEMENTOR PRO THEME BUILDER SUPPORT
+ * ===========================================
+ */
+
+/**
+ * Register Elementor Theme Locations for Theme Builder Pro
+ * This enables dynamic header/footer/single templates in Elementor Pro
+ */
+function slatan_design_register_elementor_locations($location_manager)
+{
+    // Register all core locations (header, footer, single, archive, etc.)
+    $location_manager->register_all_core_location();
+}
+add_action('elementor/theme/register_locations', 'slatan_design_register_elementor_locations');
+
+/**
+ * Add Elementor Theme Builder compatibility
+ */
+function slatan_design_elementor_theme_builder_support()
+{
+    if (!class_exists('\Elementor\Plugin')) {
+        return;
+    }
+
+    // Add Elementor default kit support
+    add_theme_support('elementor-default-kit');
+}
+add_action('after_setup_theme', 'slatan_design_elementor_theme_builder_support');
+
+/**
+ * Disable theme header/footer when Elementor Pro Theme Builder is active
+ */
+function slatan_design_elementor_theme_builder_override()
+{
+    if (!class_exists('\ElementorPro\Plugin')) {
+        return;
+    }
+
+    // Check if Elementor Pro Theme Builder has custom header
+    $header_location = \ElementorPro\Modules\ThemeBuilder\Module::instance()->get_locations_manager()->get_location('header');
+    $footer_location = \ElementorPro\Modules\ThemeBuilder\Module::instance()->get_locations_manager()->get_location('footer');
+
+    // If Elementor has custom header, add filter to skip theme header
+    if (!empty($header_location)) {
+        add_filter('slatan_skip_theme_header', '__return_true');
+    }
+
+    // If Elementor has custom footer, add filter to skip theme footer
+    if (!empty($footer_location)) {
+        add_filter('slatan_skip_theme_footer', '__return_true');
+    }
+}
+add_action('wp', 'slatan_design_elementor_theme_builder_override');
+
+/**
+ * ===========================================
+ * PERFORMANCE OPTIMIZATIONS FOR PAGE BUILDERS
+ * ===========================================
+ */
+
+/**
+ * Conditional Page Builder CSS loading
+ * Only load page-builder.css on pages that actually use page builders
+ */
+function slatan_design_conditional_builder_assets()
+{
+    if (!is_singular()) {
+        return;
+    }
+
+    $post_id = get_the_ID();
+    if (!$post_id) {
+        return;
+    }
+
+    // Check if page uses any page builder
+    $uses_elementor = get_post_meta($post_id, '_elementor_edit_mode', true);
+    $uses_beaver = get_post_meta($post_id, '_fl_builder_enabled', true);
+
+    // If page doesn't use any builder and isn't using a builder template
+    $template = get_page_template_slug($post_id);
+    $is_builder_template = in_array($template, array(
+        'page-templates/template-fullwidth.php',
+        'page-templates/template-canvas.php'
+    ));
+
+    if (!$uses_elementor && !$uses_beaver && !$is_builder_template) {
+        // Dequeue page builder specific styles on non-builder pages
+        wp_dequeue_style('slatan-page-builder');
+    }
+}
+add_action('wp_enqueue_scripts', 'slatan_design_conditional_builder_assets', 100);
+
+/**
+ * Defer non-critical page builder scripts
+ */
+function slatan_design_optimize_builder_scripts($tag, $handle, $src)
+{
+    // Skip in admin and editor mode
+    if (is_admin()) {
+        return $tag;
+    }
+
+    // Skip if in Elementor preview or editor
+    if (class_exists('\Elementor\Plugin')) {
+        if (
+            \Elementor\Plugin::$instance->preview->is_preview_mode() ||
+            \Elementor\Plugin::$instance->editor->is_edit_mode()
+        ) {
+            return $tag;
+        }
+    }
+
+    // Scripts safe to defer on frontend
+    $defer_scripts = array(
+        'elementor-waypoints',
+        'elementor-frontend-modules',
+        'jquery-numerator',
+        'swiper',
+    );
+
+    if (in_array($handle, $defer_scripts) && strpos($tag, 'defer') === false) {
+        return str_replace(' src=', ' defer src=', $tag);
+    }
+
+    return $tag;
+}
+add_filter('script_loader_tag', 'slatan_design_optimize_builder_scripts', 10, 3);
+
+/**
+ * Add dns-prefetch for page builder resources
+ */
+function slatan_design_builder_resource_hints($urls, $relation_type)
+{
+    if ('dns-prefetch' === $relation_type) {
+        // Elementor assets
+        if (class_exists('\Elementor\Plugin')) {
+            $urls[] = '//i.ytimg.com'; // YouTube thumbnails
+            $urls[] = '//www.google.com'; // Google Maps
+        }
+    }
+
+    return $urls;
+}
+add_filter('wp_resource_hints', 'slatan_design_builder_resource_hints', 10, 2);
+

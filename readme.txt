@@ -5,7 +5,7 @@ Tags: custom-background, custom-header, custom-logo, custom-menu, editor-style, 
 Requires at least: 5.0
 Tested up to: 6.4
 Requires PHP: 5.6
-Stable tag: 1.0.0
+Stable tag: 1.0.4
 License: GNU General Public License v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -17,25 +17,24 @@ Slatan Design is a modern WordPress theme designed for flexibility and ease of u
 
 = Key Features =
 
-* Page Builder Support (Elementor, Beaver Builder, Gutenberg)
+* Page Builder Support (Elementor, Beaver Builder, Brizy, Gutenberg)
 * Full-width and Canvas page templates
 * Cookie Consent Banner (GDPR compliant)
-* Floating Contact Widget (4-corner positioning)
-* Custom Code Injection with consent integration
+* Floating Contact Widget (unlimited channels with repeater)
+* Custom CSS/JavaScript injection with consent integration
+* Security Headers and login protection
+* Performance optimizations (defer, lazy load, preconnect)
 * Custom Header & Background support
-* Editor Styles for WYSIWYG editing
-* Block Styles (4 custom variations)
-* Block Patterns (2 ready-to-use patterns)
 * WooCommerce compatible
 * Translation ready
 * GitHub auto-updater
 
 = Page Builder Compatible =
 
-* Elementor (Free & Pro)
+* Elementor (Free & Pro with Theme Builder support)
 * Beaver Builder
+* Brizy
 * Gutenberg (WordPress Block Editor)
-* Other standard WordPress page builders
 
 = Plugin Compatible =
 
@@ -44,7 +43,6 @@ Slatan Design is a modern WordPress theme designed for flexibility and ease of u
 * Contact Form 7, WPForms, Gravity Forms
 * WPML, Polylang, TranslatePress
 * WP Rocket, W3 Total Cache, Autoptimize
-* And many more...
 
 == Installation ==
 
@@ -52,65 +50,56 @@ Slatan Design is a modern WordPress theme designed for flexibility and ease of u
 2. Click Upload Theme and Choose File, then select the theme's .zip file. Click Install Now.
 3. Click Activate to use your new theme right away.
 
-For detailed setup instructions, please visit: https://github.com/meennnwork-pixel/Slatan-Design-Theme
-
 == Frequently Asked Questions ==
 
 = Does this theme support Page Builders? =
 
-Yes! Slatan Design fully supports Elementor, Beaver Builder, and Gutenberg. It includes Full-width and Canvas page templates for maximum flexibility.
+Yes! Slatan Design fully supports Elementor (including Theme Builder Pro), Beaver Builder, Brizy, and Gutenberg.
 
 = Is this theme GDPR compliant? =
 
-Yes, the theme includes a built-in Cookie Consent Banner that is GDPR compliant. You can customize the text, colors, and behavior through the Customizer.
-
-= Does this theme support WooCommerce? =
-
-Yes, Slatan Design includes full WooCommerce support with proper theme integration.
+Yes, the theme includes a built-in Cookie Consent Banner that is GDPR compliant.
 
 = How do I use the Floating Contact Widget? =
 
-Go to Appearance > Customize > Floating Contact. Enable the widget, choose your position (4 corners available), and add up to 9 contact channels with custom icons and colors.
+Go to Appearance > Customize > Floating Contact > Contact Channels. Click "Add Channel" to add unlimited contact channels.
 
-= Can I inject custom code (analytics, tracking)? =
+= Can I inject custom code? =
 
-Yes! Go to Appearance > Customize > Custom Code. You can inject code in the head, body start, or body end. Each section supports cookie consent integration.
-
-= How do I receive automatic updates? =
-
-The theme includes a GitHub auto-updater. When new releases are published on GitHub, you'll receive update notifications in your WordPress dashboard.
+Yes! Go to Appearance > Customize > Custom Code. You can add Custom CSS, Custom JavaScript, and code for head/body sections.
 
 == Changelog ==
 
+= 1.0.4 - 2025-12-12 =
+* Added: Dynamic Repeater for Floating Contact (unlimited channels)
+* Added: Security headers and login protection
+* Added: Performance optimizations
+* Added: Elementor Theme Builder Pro support
+* Added: Brizy page builder support
+* Added: Custom CSS/JS sections with minify/defer
+* Improved: Page Builder compatibility
+* Removed: Code Snippets (use plugin for security)
+* Fixed: Customizer Code Editor back button issue
+
+= 1.0.3 =
+* Page Builder support improvements
+* Block patterns and styles
+
 = 1.0.0 - 2025-11-28 =
 * Initial release
-* Cookie Consent Banner with GDPR compliance
-* Floating Contact Widget with 4-corner positioning
-* Custom Code Injection with proper escaping
-* Page Builder support (Elementor, Beaver Builder, Gutenberg)
-* Custom Header & Background support
-* Editor Styles for WYSIWYG editing
-* Block Styles (4 custom variations)
-* Block Patterns (2 ready-to-use patterns)
-* Full-width & Canvas page templates
-* GitHub auto-updater
-* Comprehensive plugin compatibility
-* WooCommerce support
-* Translation ready
 
 == Upgrade Notice ==
 
-= 1.0.0 =
-Initial release of Slatan Design theme.
+= 1.0.4 =
+New features: Unlimited contact channels, security headers, performance optimizations. Code Snippets removed for security.
 
 == Resources ==
 
-* Based on Underscores https://underscores.me/, (C) 2012-2020 Automattic, Inc., [GPLv2 or later](https://www.gnu.org/licenses/gpl-2.0.html)
-* normalize.css https://necolas.github.io/normalize.css/, (C) 2012-2018 Nicolas Gallagher and Jonathan Neal, [MIT](https://opensource.org/licenses/MIT)
-* Font Awesome https://fontawesome.com/, (C) Fonticons, Inc., [Font Awesome Free License](https://fontawesome.com/license/free)
+* Based on Underscores https://underscores.me/, (C) 2012-2020 Automattic, Inc., [GPLv2 or later]
+* normalize.css https://necolas.github.io/normalize.css/, (C) Nicolas Gallagher and Jonathan Neal, [MIT]
+* Font Awesome https://fontawesome.com/, (C) Fonticons, Inc., [Font Awesome Free License]
 
 == Support ==
 
-For support and documentation, please visit:
 * GitHub: https://github.com/meennnwork-pixel/Slatan-Design-Theme
 * Website: https://slatan.co.th/

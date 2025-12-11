@@ -27,5 +27,7 @@ li[id*="slatan_fc_channel_1_enable_control"] {
 
 /* Enlarge the height of the WP Code Editor */
 .customize-control-code_editor .CodeMirror {
-    height: 90vh !important;
+    /* height: 90vh !important;  <-- ของเดิม ลบออก หรือ comment ไว้ */
+    height: calc(100vh - 180px) !important; /* ลดความสูงลงเพื่อให้เหลือพื้นที่ส่วนหัว/ท้าย */
+    max-height: 600px !important; /* กำหนดความสูงสูงสุดกันไว้ไม่ให้ล้น */
 }

@@ -1,0 +1,193 @@
+/**
+ * Floating Contact Repeater - Admin Styles
+ * Styles for the Customizer repeater control
+ *
+ * @package Slatan_Design
+ */
+
+/* Control Container */
+.slatan-repeater-control {
+    margin-top: 10px;
+}
+
+/* Items Container */
+.slatan-repeater-items {
+    margin-bottom: 10px;
+}
+
+/* Single Item */
+.slatan-repeater-item {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    transition: opacity 0.2s, border-color 0.2s;
+}
+
+.slatan-repeater-item:hover {
+    border-color: #0073aa;
+}
+
+.slatan-repeater-item.is-disabled {
+    opacity: 0.6;
+    background: #f7f7f7;
+}
+
+.slatan-repeater-item.is-disabled .slatan-repeater-item-title {
+    text-decoration: line-through;
+    color: #999;
+}
+
+/* Item Header */
+.slatan-repeater-item-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    background: #f9f9f9;
+    border-bottom: 1px solid #eee;
+    cursor: move;
+    border-radius: 3px 3px 0 0;
+}
+
+.slatan-repeater-item-title {
+    font-weight: 500;
+    color: #333;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Item Actions */
+.slatan-repeater-item-actions {
+    display: flex;
+    gap: 4px;
+}
+
+.slatan-repeater-item-actions button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    color: #666;
+    border-radius: 3px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.slatan-repeater-item-actions button:hover {
+    background: #e0e0e0;
+    color: #333;
+}
+
+.slatan-repeater-item-actions .slatan-repeater-remove:hover {
+    background: #dc3232;
+    color: #fff;
+}
+
+.slatan-repeater-item-actions .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+/* Item Content */
+.slatan-repeater-item-content {
+    padding: 15px;
+    background: #fff;
+    border-radius: 0 0 3px 3px;
+}
+
+/* Field Styles */
+.slatan-repeater-field {
+    margin-bottom: 12px;
+}
+
+.slatan-repeater-field:last-child {
+    margin-bottom: 0;
+}
+
+.slatan-repeater-field label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 4px;
+    color: #333;
+    font-size: 12px;
+}
+
+.slatan-repeater-field .description {
+    display: block;
+    font-size: 11px;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.slatan-repeater-field input[type="text"],
+.slatan-repeater-field input[type="url"],
+.slatan-repeater-field select {
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+}
+
+.slatan-repeater-field input:focus,
+.slatan-repeater-field select:focus {
+    border-color: #0073aa;
+    outline: none;
+    box-shadow: 0 0 0 1px #0073aa;
+}
+
+/* Color Picker */
+.slatan-repeater-field.slatan-field-color .wp-picker-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.slatan-repeater-field.slatan-field-color .wp-picker-container .wp-color-result {
+    margin-right: 8px;
+}
+
+/* Add Button */
+.slatan-repeater-add {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 8px 12px !important;
+}
+
+.slatan-repeater-add .dashicons {
+    font-size: 16px !important;
+    width: 16px !important;
+    height: 16px !important;
+    line-height: 16px !important;
+}
+
+/* Sortable Placeholder */
+.slatan-repeater-placeholder {
+    background: #f0f6fc;
+    border: 2px dashed #0073aa;
+    border-radius: 4px;
+    height: 50px;
+    margin-bottom: 8px;
+}
+
+/* Animation */
+.slatan-repeater-item {
+    animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

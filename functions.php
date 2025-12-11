@@ -58,12 +58,15 @@ add_action('after_setup_theme', 'slatan_design_setup');
 function slatan_design_scripts()
 {
 	wp_enqueue_style('slatan-design-style', get_stylesheet_uri(), array(), _S_VERSION);
-
-	// Enqueue Font Awesome CDN (if enabled in Floating Contact settings)
-	if (get_theme_mod('slatan_fc_load_fontawesome', true)) {
-		wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css', array(), '6.5.1');
+	// Only load Font Awesome if Floating Contact is enabled AND uses FA
+	if (get_theme_mod('slatan_fc_load_fontawesome', true) && get_theme_mod('slatan_fc_enable', false)) {
+		wp_enqueue_style(
+			'font-awesome',
+			'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css',
+			array(),
+			'6.5.1'
+		);
 	}
-
 	if (is_singular() && comments_open() && get_option('thread_comments')) {
 		wp_enqueue_script('comment-reply');
 	}
@@ -73,10 +76,15 @@ add_action('wp_enqueue_scripts', 'slatan_design_scripts');
 /**
  * Include Customizer options.
  */
+require get_template_directory() . '/inc/customizer/class-customizer-repeater.php';
 require get_template_directory() . '/inc/customizer/cookie-consent-options.php';
 require get_template_directory() . '/inc/customizer/floating-contact-options.php';
 require get_template_directory() . '/inc/customizer/custom-code-options.php';
 require get_template_directory() . '/inc/customizer/header-display-options.php';
+require get_template_directory() . '/inc/security.php';
+require get_template_directory() . '/inc/performance.php';
+require get_template_directory() . '/inc/plugin-support.php';
+require get_template_directory() . '/inc/customizer/performance-options.php';
 
 /**
  * Include Theme Support features.
@@ -96,14 +104,50 @@ require get_template_directory() . '/inc/frontend/floating-contact-frontend.php'
 require get_template_directory() . '/inc/frontend/custom-code-frontend.php';
 
 /**
- * Allow SVG uploads for admins.
+ * Allow SVG uploads for Admin users only with sanitization.
  */
 function slatan_design_allow_svg_upload($mimes)
 {
+	// Only allow admins to upload SVG
+	if (!current_user_can('manage_options')) {
+		return $mimes;
+	}
+
 	$mimes['svg'] = 'image/svg+xml';
+	$mimes['svgz'] = 'image/svg+xml';
 	return $mimes;
 }
 add_filter('upload_mimes', 'slatan_design_allow_svg_upload');
+/**
+ * Sanitize SVG files on upload
+ */
+function slatan_design_sanitize_svg($file)
+{
+	// Check if this is an SVG
+	if ($file['type'] === 'image/svg+xml') {
+		$file_content = file_get_contents($file['tmp_name']);
+
+		// Remove potentially dangerous elements
+		$dangerous_patterns = array(
+			'/<script\b[^>]*>(.*?)<\/script>/is',
+			'/on\w+="[^"]*"/i',
+			'/on\w+=\'[^\']*\'/i',
+			'/<foreignObject\b[^>]*>(.*?)<\/foreignObject>/is',
+		);
+
+		foreach ($dangerous_patterns as $pattern) {
+			$file_content = preg_replace($pattern, '', $file_content);
+		}
+
+		// Remove href with javascript:
+		$file_content = preg_replace('/href\s*=\s*["\']javascript:[^"\']*["\']/i', 'href="#"', $file_content);
+
+		file_put_contents($file['tmp_name'], $file_content);
+	}
+
+	return $file;
+}
+add_filter('wp_handle_upload_prefilter', 'slatan_design_sanitize_svg');
 
 /**
  * Centralized Sanitization callback for checkbox.

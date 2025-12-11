@@ -4,7 +4,7 @@
  *
  * Contains the closing of the #content div and all content after.
  *
- * @package Your_Theme_Name
+ * @package Slatan_Design
  */
 
 if (!defined('ABSPATH')) {

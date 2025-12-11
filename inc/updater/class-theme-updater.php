@@ -125,30 +125,49 @@ if (!class_exists('Slatan_Theme_Updater')) {
             return "https://github.com/{$this->username}/{$this->repository}"; // phpcs:ignore
         }
 
+        /**
+         * Get GitHub data with caching
+         */
         private function get_github_data()
         {
-            $url = "https://api.github.com/repos/{$this->username}/{$this->repository}/releases/latest"; // phpcs:ignore
-
-            $args = array();
-            if (!empty($this->github_auth)) {
-                $args['headers'] = array(
-                    'Authorization' => 'token ' . $this->github_auth,
-                );
+            // Check cache first
+            $cache_key = 'slatan_github_update_' . md5($this->username . $this->repository);
+            $cached_data = get_transient($cache_key);
+            
+            if ($cached_data !== false) {
+                return $cached_data;
             }
-
+            
+            $url = "https://api.github.com/repos/{$this->username}/{$this->repository}/releases/latest";
+            $args = array(
+                'timeout' => 10,
+                'headers' => array(
+                    'Accept' => 'application/vnd.github.v3+json',
+                ),
+            );
+            
+            if (!empty($this->github_auth)) {
+                $args['headers']['Authorization'] = 'token ' . $this->github_auth;
+            }
             $request = wp_safe_remote_get($url, $args);
-
             if (is_wp_error($request)) {
+                // Log error for debugging (optional)
+                if (defined('WP_DEBUG') && WP_DEBUG) {
+                    error_log('Slatan Theme Updater Error: ' . $request->get_error_message());
+                }
                 return false;
             }
-
+            $response_code = wp_remote_retrieve_response_code($request);
+            if ($response_code !== 200) {
+                return false;
+            }
             $body = wp_remote_retrieve_body($request);
             $data = json_decode($body);
-
-            if (!empty($data)) {
+            if (!empty($data) && isset($data->tag_name)) {
+                // Cache for 6 hours
+                set_transient($cache_key, $data, 6 * HOUR_IN_SECONDS);
                 return $data;
             }
-
             return false;
         }
     }
